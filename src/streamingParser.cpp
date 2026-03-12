@@ -78,7 +78,14 @@ void StreamingParser::run(std::stop_token stop_token) {
 
         // Route the incoming bytes into this client's dedicated ring buffer.
         auto& client_state = m_clients[chunk.client_id];
-        client_state.ring_buffer.push(chunk.data);
+        try {
+            client_state.ring_buffer.push(chunk.data);
+        } catch (const std::overflow_error& e) {
+            m_log_queue.push("[StreamingParser] " + std::string(e.what())
+                             + " — dropping client fd=" + std::to_string(chunk.client_id) + "\n");
+            m_clients.erase(chunk.client_id);
+            continue;
+        }
 
         // Drive the state machine — may extract 0, 1, or many packets.
         process_client(client_state);
