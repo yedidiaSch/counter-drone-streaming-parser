@@ -88,7 +88,15 @@ void StreamingParser::run(std::stop_token stop_token) {
         }
 
         // Drive the state machine — may extract 0, 1, or many packets.
-        process_client(client_state);
+        try {
+            process_client(client_state);
+        } catch (const std::exception& e) {
+            m_log_queue.push("[StreamingParser] Unexpected error for client fd="
+                             + std::to_string(chunk.client_id) + ": " + e.what()
+                             + " — dropping client\n");
+            m_clients.erase(chunk.client_id);
+            continue;
+        }
     }
 
     {

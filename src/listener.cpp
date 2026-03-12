@@ -218,7 +218,18 @@ void NetworkListener::handle_accept() {
         SocketHandle client_handle(raw_fd);
 
         // Every client must be non-blocking for edge-triggered epoll.
-        set_nonblocking(client_handle.get());
+        try {
+            set_nonblocking(client_handle.get());
+        } catch (const std::system_error& e) {
+            {
+                std::ostringstream log_message;
+                log_message << "[NetworkListener] set_nonblocking failed for client fd="
+                            << client_handle.get() << ": " << e.what() << "\n";
+                m_log_queue.push(std::move(log_message).str());
+            }
+            // SocketHandle destructor closes the fd automatically.
+            continue;
+        }
 
         // Register the new client with epoll (edge-triggered for high throughput).
         epoll_event registration{};
