@@ -1,0 +1,26 @@
+# Build artifacts
+build/
+cmake-build-*/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*~
+
+# Documentation & Config
+Docs/
+.github/
+
+# Compiled objects
+*.o
+*.a
+*.so
+
+# Executables
+counter_drone_server
+test_client
+
+# Log files (keep the folder via .gitkeep)
+log/*.log
+__pycache__/
