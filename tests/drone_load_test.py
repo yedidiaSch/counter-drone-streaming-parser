@@ -2,7 +2,7 @@
 """
 Comprehensive load test for the Counter-Drone TCP server.
 
-Simulates 1–100 drones connecting simultaneously, each running one of six
+Simulates 1–1000 drones connecting simultaneously, each running one of six
 behavioural profiles.  A Rich terminal dashboard displays real-time
 statistics including packets sent, bytes transferred, connection status,
 per-profile breakdowns, and error counts.
@@ -708,15 +708,15 @@ Example:
     parser.add_argument("--port", type=int, default=9000,
                         help="Server port (default: 9000)")
     parser.add_argument("--drones", type=int, default=10,
-                        help="Number of simulated drones, 1–100 (default: 10)")
+                        help="Number of simulated drones, 1–1000 (default: 10)")
     parser.add_argument("--duration", type=int, default=30,
                         help="Test duration in seconds (default: 30)")
     parser.add_argument("--rate", type=float, default=20.0,
                         help="Target packets/second per drone (default: 20)")
     args = parser.parse_args()
 
-    if not 1 <= args.drones <= 100:
-        parser.error("--drones must be between 1 and 100")
+    if not 1 <= args.drones <= 1000:
+        parser.error("--drones must be between 1 and 1000")
     if args.duration < 1:
         parser.error("--duration must be at least 1 second")
     if args.rate < 0.1:
